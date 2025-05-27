@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Blocked - ATAV Safe Browsing</title>
+    <link rel="stylesheet" href="blocked.css">
+</head>
+<body>
+    <div class="container">
+        <h1><span class="danger-icon"></span> Site Blocked: Potentially Dangerous</h1>
+        <p>The website you attempted to access has been flagged as potentially dangerous by <strong>ATAV Safe Browsing</strong>.</p>
+        
+        <div class="details">
+            <p><strong>Blocked Host:</strong> <span id="host">N/A</span></p>
+            <p><strong>Assessed Risk:</strong> <span id="risk">N/A</span></p>
+            <p><strong>Category:</strong> <span id="category">N/A</span></p>
+            <p><strong>Original URL:</strong> <span id="originalUrlDisplay">N/A</span></p>
+        </div>
+        
+        <p>We strongly advise against proceeding to this site. Your security is important.</p>
+        
+        <div class="actions">
+            <button id="goBackButton" title="Go to the previous page or a new tab">Go Back Safely</button>
+            </div>
+         <p class="footer-note">If you believe this is a mistake, you can report it using the ATAV Safe Browsing extension icon in your browser toolbar.</p>
+    </div>
+    <script src="blocked.js"></script>
+</body>
+</html>

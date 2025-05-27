@@ -1,0 +1,120 @@
+/* ATAV Safe Browsing - blocked.css */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    background-color: #fef3f3; /* Light red background */
+    color: #58151c; /* Dark red text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.container {
+    background-color: #fff;
+    padding: 35px 45px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    max-width: 680px;
+    width: 100%;
+    border-top: 10px solid #d9534f; /* Solid red top border */
+}
+
+h1 {
+    color: #d9534f; /* Red color for danger */
+    font-size: 26px; 
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Simple CSS-only warning icon */
+.danger-icon::before {
+    content: '!';
+    display: inline-block;
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #d9534f;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    margin-right: 12px;
+}
+
+
+p {
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+.details {
+    background-color: #fdf7f7; /* Very light red */
+    border: 1px solid #f5c6cb; /* Light red border */
+    padding: 20px;
+    margin-top: 25px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.details p {
+    font-size: 15px;
+    margin-bottom: 12px;
+    color: #721c24; /* Darker red for details text */
+}
+.details p:last-child {
+    margin-bottom: 0;
+}
+
+.details strong {
+    color: #721c24;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.details span {
+    word-break: break-all; /* Break long URLs or hostnames */
+}
+
+.actions {
+    margin-top: 30px;
+}
+
+button {
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    font-size: 17px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+    margin: 0 10px;
+}
+
+button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+#goBackButton {
+    background-color: #5a6268; /* Dark gray */
+}
+#goBackButton:hover {
+    background-color: #494f54;
+}
+
+.footer-note {
+    margin-top: 35px;
+    font-size: 14px;
+    color: #6c757d; /* Muted gray */
+}
