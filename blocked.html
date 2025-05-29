@@ -22,9 +22,32 @@
         
         <div class="actions">
             <button id="goBackButton" title="Go to the previous page or a new tab">Go Back Safely</button>
-            </div>
-         <p class="footer-note">If you believe this is a mistake, you can report it using the ATAV Safe Browsing extension icon in your browser toolbar.</p>
+            <button id="continueButton" title="Proceed to the blocked site (not recommended)">Continue Anyway</button>
+            <button id="stopCloseButton" title="Stop loading and close this page immediately">Stop & Close</button>
+        </div>
+        <p class="footer-note">If you believe this is a mistake, you can report it using the ATAV Safe Browsing extension icon in your browser toolbar.</p>
     </div>
     <script src="blocked.js"></script>
+    <script>
+        // "Continue" just hides the warning, but doesn't navigate away
+        document.getElementById('continueButton').addEventListener('click', function() {
+            document.querySelector('.container').innerHTML = `
+                <h1><span class="danger-icon"></span> Proceed With Caution</h1>
+                <p>You have chosen to continue despite the warning. ATAV Safe Browsing is not responsible for any consequences.</p>
+                <button id="returnButton">Return to Warning</button>
+            `;
+            document.getElementById('returnButton').addEventListener('click', function() {
+                window.location.reload();
+            });
+        });
+
+        // "Stop & Close" tries to stop any loading and closes the tab
+        document.getElementById('stopCloseButton').addEventListener('click', function() {
+            // Try to stop page loading (for completeness, though blocked.html is static)
+            if (typeof window.stop === 'function') window.stop();
+            // Try to close the tab
+            window.close();
+        });
+    </script>
 </body>
 </html>
