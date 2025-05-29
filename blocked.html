@@ -27,53 +27,67 @@
         </div>
         <p class="footer-note">If you believe this is a mistake, you can report it using the ATAV Safe Browsing extension icon in your browser toolbar.</p>
     </div>
-    <div id="frameContainer" style="display:none; width:100%; height:90vh;">
-        <!-- The blocked site will load here if "Continue" is clicked. -->
-        <div style="display: flex; justify-content: flex-end; background: #f8f8f8; padding: 8px;">
+
+    <div id="frameContainer" style="display:none; width:100%; height:95vh; flex-direction:column;">
+        <div style="display:flex; justify-content:flex-end; background: #f8f8f8; padding: 8px;">
             <button id="closeFrameButton" style="background:red;color:#fff; border:none; padding: 8px 12px; cursor:pointer;">Stop & Close</button>
             <button id="backToBlockPage" style="margin-left:10px; background:#333;color:#fff;border:none;padding:8px 12px;cursor:pointer;">Return to Warning</button>
         </div>
-        <iframe id="blockedIframe" src="" style="width:100%; height:85vh; border:none;"></iframe>
+        <iframe id="blockedIframe" src="about:blank" style="width:100%; height:90vh; border:none;"></iframe>
     </div>
+
     <script>
-        // Helper to get the original URL (for demo, update this as per actual extension logic)
+        /**
+         * YOU MUST ENSURE THAT THE "originalUrlDisplay" SPAN IS POPULATED WITH THE CORRECT URL
+         * BEFORE THE USER PRESSES "Continue Anyway".
+         * 
+         * This code expects the original URL to be injected into the span#originalUrlDisplay
+         * by your extension's script, or by setting sessionStorage['blockedUrl'] before loading this page.
+         * 
+         * If nothing is set, the iframe will NOT attempt to load an invalid URL.
+         */
+
         function getOriginalUrl() {
-            return sessionStorage.getItem('blockedUrl') || '';
+            // Try to get from span first (injected by extension)
+            var url = document.getElementById('originalUrlDisplay').textContent?.trim();
+            if (url && url !== "N/A" && url !== "") return url;
+            // Fallback: try to get from sessionStorage
+            if (window.sessionStorage) {
+                var ss = sessionStorage.getItem('blockedUrl');
+                if (ss && ss !== '') return ss;
+            }
+            return '';
         }
 
-        // "Continue" loads the blocked site within an iframe in this page
         document.getElementById('continueButton').addEventListener('click', function() {
-            var originalUrl = document.getElementById('originalUrlDisplay').textContent;
-            if (!/^https?:\/\//.test(originalUrl)) {
-                alert('Invalid or missing original URL.');
+            var originalUrl = getOriginalUrl();
+            if (!/^https?:\/\//i.test(originalUrl)) {
+                alert('Invalid or missing original URL. (Value: "' + originalUrl + '")');
                 return;
             }
             document.getElementById('blockContainer').style.display = 'none';
-            document.getElementById('frameContainer').style.display = 'block';
-            document.getElementById('blockedIframe').src = originalUrl;
+            document.getElementById('frameContainer').style.display = 'flex';
+            var frame = document.getElementById('blockedIframe');
+            frame.src = originalUrl;
         });
 
-        // "Stop & Close" tries to stop any loading and closes the tab
         function stopAndClose() {
-            if (typeof window.stop === 'function') window.stop();
+            try { if (typeof window.stop === 'function') window.stop(); } catch(e){}
             window.close();
         }
         document.getElementById('stopCloseButton').addEventListener('click', stopAndClose);
         document.getElementById('closeFrameButton').addEventListener('click', stopAndClose);
 
-        // "Return to Warning" goes back to blocked warning view, stops iframe
         document.getElementById('backToBlockPage').addEventListener('click', function() {
             document.getElementById('blockedIframe').src = 'about:blank';
             document.getElementById('frameContainer').style.display = 'none';
             document.getElementById('blockContainer').style.display = 'block';
         });
 
-        // Optionally, set the "originalUrlDisplay" from sessionStorage or other source if needed
+        // Optionally auto-fill "originalUrlDisplay" on page load if possible
         window.addEventListener('DOMContentLoaded', function() {
-            var blockedUrl = getOriginalUrl();
-            if (blockedUrl) {
-                document.getElementById('originalUrlDisplay').textContent = blockedUrl;
-            }
+            var url = getOriginalUrl();
+            if (url) document.getElementById('originalUrlDisplay').textContent = url;
         });
     </script>
     <script src="blocked.js"></script>
