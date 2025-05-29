@@ -36,60 +36,6 @@
         <iframe id="blockedIframe" src="about:blank" style="width:100%; height:90vh; border:none;"></iframe>
     </div>
 
-    <script>
-        /**
-         * YOU MUST ENSURE THAT THE "originalUrlDisplay" SPAN IS POPULATED WITH THE CORRECT URL
-         * BEFORE THE USER PRESSES "Continue Anyway".
-         * 
-         * This code expects the original URL to be injected into the span#originalUrlDisplay
-         * by your extension's script, or by setting sessionStorage['blockedUrl'] before loading this page.
-         * 
-         * If nothing is set, the iframe will NOT attempt to load an invalid URL.
-         */
-
-        function getOriginalUrl() {
-            // Try to get from span first (injected by extension)
-            var url = document.getElementById('originalUrlDisplay').textContent?.trim();
-            if (url && url !== "N/A" && url !== "") return url;
-            // Fallback: try to get from sessionStorage
-            if (window.sessionStorage) {
-                var ss = sessionStorage.getItem('blockedUrl');
-                if (ss && ss !== '') return ss;
-            }
-            return '';
-        }
-
-        document.getElementById('continueButton').addEventListener('click', function() {
-            var originalUrl = getOriginalUrl();
-            if (!/^https?:\/\//i.test(originalUrl)) {
-                alert('Invalid or missing original URL. (Value: "' + originalUrl + '")');
-                return;
-            }
-            document.getElementById('blockContainer').style.display = 'none';
-            document.getElementById('frameContainer').style.display = 'flex';
-            var frame = document.getElementById('blockedIframe');
-            frame.src = originalUrl;
-        });
-
-        function stopAndClose() {
-            try { if (typeof window.stop === 'function') window.stop(); } catch(e){}
-            window.close();
-        }
-        document.getElementById('stopCloseButton').addEventListener('click', stopAndClose);
-        document.getElementById('closeFrameButton').addEventListener('click', stopAndClose);
-
-        document.getElementById('backToBlockPage').addEventListener('click', function() {
-            document.getElementById('blockedIframe').src = 'about:blank';
-            document.getElementById('frameContainer').style.display = 'none';
-            document.getElementById('blockContainer').style.display = 'block';
-        });
-
-        // Optionally auto-fill "originalUrlDisplay" on page load if possible
-        window.addEventListener('DOMContentLoaded', function() {
-            var url = getOriginalUrl();
-            if (url) document.getElementById('originalUrlDisplay').textContent = url;
-        });
-    </script>
     <script src="blocked.js"></script>
 </body>
 </html>
