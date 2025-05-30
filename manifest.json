@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ATAV Safe Browsing",
-  "version": "1.0.5",
+  "version": "1.0.5-eme-patch-1",
   "description": "Checks website safety using ATAV API, blocks dangerous sites, and allows reporting of suspicious sites.",
   "permissions": [
     "webRequest",
