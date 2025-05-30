@@ -22,8 +22,14 @@
         
         <div class="actions">
             <button id="goBackButton" title="Go to the previous page or a new tab">Go Back Safely</button>
-            </div>
-         <p class="footer-note">If you believe this is a mistake, you can report it using the ATAV Safe Browsing extension icon in your browser toolbar.</p>
+            <button id="continueButton" title="Continue to the unsafe site">Continue Anyway</button>
+            <button id="emergencyExitButton" title="Emergency exit to safety" style="background: #c00; color: #fff;">Emergency Exit</button>
+        </div>
+        <div id="iframeContainer" style="display:none; margin-top:20px;">
+            <p><strong>You are viewing the unsafe site below. For your safety, interactions may be limited.</strong></p>
+            <!-- iframe will be injected here -->
+        </div>
+        <p class="footer-note">If you believe this is a mistake, you can report it using the ATAV Safe Browsing extension icon in your browser toolbar.</p>
     </div>
     <script src="blocked.js"></script>
 </body>
