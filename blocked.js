@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         iframe.style.height = "400px";
         iframe.style.border = "2px solid #c00";
         iframe.src = decodeURIComponent(originalUrl);
-        iframe.setAttribute('sandbox', 'allow-same-origin'); // Sandboxed!
+        iframe.setAttribute('sandbox', 'allow-scripts'); // Sandboxed!
         container.appendChild(iframe);
         container.style.display = 'block';
         document.getElementById('continueButton').disabled = true;
