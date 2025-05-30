@@ -1,6 +1,4 @@
-// ATAV Safe Browsing - blocked.js (testing branch)
-// Handles blocked.html logic for in-page continuation
-
+// ATAV Safe Browsing - blocked.js
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
 
@@ -10,12 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const originalUrl = params.get('originalUrl');
     const originalUrlDisplay = document.getElementById('originalUrlDisplay');
-    let decodedUrl = '';
 
     if (originalUrl) {
         try {
-            decodedUrl = decodeURIComponent(originalUrl);
-            originalUrlDisplay.textContent = decodedUrl;
+            originalUrlDisplay.textContent = decodeURIComponent(originalUrl);
         } catch (e) {
             console.error("ATAV BlockedPage: Error decoding original URL:", e);
             originalUrlDisplay.textContent = "Error decoding URL";
@@ -24,42 +20,28 @@ document.addEventListener('DOMContentLoaded', () => {
         originalUrlDisplay.textContent = 'N/A';
     }
 
-    // Go Back Safely
     document.getElementById('goBackButton').addEventListener('click', () => {
         if (history.length > 1 && document.referrer) {
             history.back();
         } else {
-            window.location.href = 'about:newtab';
+            window.location.href = 'about:newtab'; 
         }
     });
 
-    // Stop & Close (from block screen)
-    function stopAndClose() {
-        try { if (typeof window.stop === 'function') window.stop(); } catch(e){}
-        window.close();
-    }
-    document.getElementById('stopCloseButton').addEventListener('click', stopAndClose);
+    // Emergency Exit: instantly go to new tab (safe)
+    document.getElementById('emergencyExitButton').addEventListener('click', () => {
+        window.location.href = 'about:newtab';
+    });
 
-    // Continue Anyway: load blocked site in iframe, stay in block page
+    // Continue Anyway: show the iframe with the unsafe site
     document.getElementById('continueButton').addEventListener('click', () => {
-        // Use decodedUrl if available, else get from display span
-        let toLoad = decodedUrl || originalUrlDisplay.textContent.trim();
-        if (!/^https?:\/\//i.test(toLoad)) {
-            alert('Invalid or missing original URL. (Value: "' + toLoad + '")');
-            return;
+        if (originalUrl) {
+            const container = document.getElementById('iframeContainer');
+            const iframe = document.getElementById('unsafeIframe');
+            iframe.src = decodeURIComponent(originalUrl);
+            container.style.display = 'block';
+            // Optionally disable the continue button after click
+            document.getElementById('continueButton').disabled = true;
         }
-        document.getElementById('blockContainer').style.display = 'none';
-        document.getElementById('frameContainer').style.display = 'flex';
-        document.getElementById('blockedIframe').src = toLoad;
-    });
-
-    // Stop & Close (from iframe view)
-    document.getElementById('closeFrameButton').addEventListener('click', stopAndClose);
-
-    // Return to block warning, blank the iframe and hide it
-    document.getElementById('backToBlockPage').addEventListener('click', () => {
-        document.getElementById('blockedIframe').src = 'about:blank';
-        document.getElementById('frameContainer').style.display = 'none';
-        document.getElementById('blockContainer').style.display = 'block';
     });
 });
