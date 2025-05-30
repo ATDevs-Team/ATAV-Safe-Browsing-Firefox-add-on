@@ -28,18 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('continueButton').addEventListener('click', () => {
-        if (originalUrl) {
-            const container = document.getElementById('iframeContainer');
-            container.innerHTML = '<p><strong>You are viewing the unsafe site below. For your safety, interactions may be limited.</strong></p>';
-            const iframe = document.createElement('iframe');
-            iframe.id = "unsafeIframe";
-            iframe.style.width = "100%";
-            iframe.style.height = "400px";
-            iframe.style.border = "2px solid #c00";
-            iframe.src = decodeURIComponent(originalUrl);
-            container.appendChild(iframe);
-            container.style.display = 'block';
-            document.getElementById('continueButton').disabled = true;
-        }
+    if (originalUrl) {
+        const container = document.getElementById('iframeContainer');
+        container.innerHTML = '<p><strong>You are viewing the unsafe site below. For your safety, interactions may be limited.</strong></p>';
+        const iframe = document.createElement('iframe');
+        iframe.id = "unsafeIframe";
+        iframe.style.width = "100%";
+        iframe.style.height = "400px";
+        iframe.style.border = "2px solid #c00";
+        iframe.src = decodeURIComponent(originalUrl);
+        iframe.setAttribute('sandbox', 'allow-same-origin'); // Sandboxed!
+        container.appendChild(iframe);
+        container.style.display = 'block';
+        document.getElementById('continueButton').disabled = true;
+    }
     });
 });
