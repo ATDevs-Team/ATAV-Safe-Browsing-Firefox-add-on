@@ -14,7 +14,7 @@ Let’s say you wanted to check the URL:
 https://warn.test.atdevs/malware.exe
 ```
 
-You can’t check **full URLs** with the ATAV API — only **hostnames**.
+You can check entire URLs ***as long as you URL-encode them.*** 
 
 In this case, the hostname `warn.test.atdevs` is associated with malicious activity and will return a warning.
 
@@ -41,6 +41,16 @@ curl "https://atav-api-browser.atdevs.org/check?host=warn.test.atdevs"
   "status": "Dangerous",
   "risk": "High",
   "category": "Malware Distribution"
+}
+```
+
+### Not known in database
+```json
+{
+  "host": "unknown.test.atdevs",
+  "status": "Unknown",
+  "risk": "Unknown. The provided input did not match any data inside the database. Consider reporting this as Safe or Dangerous so that we can add it to our database.",
+  "category": "Unknown"
 }
 ```
 
