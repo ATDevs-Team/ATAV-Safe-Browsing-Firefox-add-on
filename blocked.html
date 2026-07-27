@@ -1,36 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site Blocked - ATAV Safe Browsing</title>
-    <link rel="stylesheet" href="blocked.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Blocked - ATAV Safe Browsing</title>
+  <link rel="stylesheet" href="blocked.css">
 </head>
 <body>
-    <div class="container">
-        <h1><span class="danger-icon"></span> Site Blocked: Potentially Dangerous</h1>
-        <p>The website you attempted to access has been flagged as potentially dangerous by <strong>ATAV Safe Browsing</strong>.</p>
-        
-        <div class="details">
-            <p><strong>Blocked Host:</strong> <span id="host">N/A</span></p>
-            <p><strong>Assessed Risk:</strong> <span id="risk">N/A</span></p>
-            <p><strong>Category:</strong> <span id="category">N/A</span></p>
-            <p><strong>Original URL:</strong> <span id="originalUrlDisplay">N/A</span></p>
-        </div>
-        
-        <p>We strongly advise against proceeding to this site. Your security is important.</p>
-        
-        <div class="actions">
-            <button id="goBackButton" title="Go to the previous page or a new tab">Go Back Safely</button>
-            <button id="continueButton" title="Continue to the unsafe site">Continue Anyway</button>
-            <button id="emergencyExitButton" title="Emergency exit to safety" style="background: #c00; color: #fff;">Emergency Exit</button>
-        </div>
-        <div id="iframeContainer" style="display:none; margin-top:20px;">
-            <p><strong>You are viewing the unsafe site below. For your safety, interactions may be limited.</strong></p>
-            <!-- iframe will be injected here -->
-        </div>
-        <p class="footer-note">If you believe this is a mistake, you can report it using the ATAV Safe Browsing extension icon in your browser toolbar.</p>
+  <div class="card">
+    <div class="icon-container">
+      <img src="dat/warn.png" alt="Warning Icon" class="warning-icon">
     </div>
-    <script src="blocked.js"></script>
+    <h1>Warning: Potentially Unsafe Site Blocked</h1>
+    <p class="description">
+      ATAV Safe Browsing has blocked access to this page to protect your device and privacy.
+    </p>
+    <div class="url-box">
+      <strong>Target URL:</strong>
+      <span id="blocked-url-display">Loading target site URL...</span>
+    </div>
+    <div class="actions">
+      <button id="go-back-btn" class="btn btn-primary">Go Back to Safety</button>
+      <button id="allow-temp-btn" class="btn btn-danger">Temporarily Allow Website</button>
+    </div>
+  </div>
+  <script src="blocked.js"></script>
 </body>
 </html>

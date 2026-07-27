@@ -1,42 +1,32 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "ATAV Safe Browsing",
-  "version": "1.0.5.1",
-  "description": "Checks website safety using ATAV API, blocks dangerous sites, and allows reporting of suspicious sites.",
+  "version": "1.1.1.2",
+  "description": "Firefox add-on to protect users from malicious websites and unauthorized web requests.",
   "permissions": [
     "webRequest",
     "webRequestBlocking",
-    "tabs",
     "storage",
-    "activeTab"
-  ],
-  "host_permissions": [
-    "<all_urls>",
-    "http://*/*",
-    "https://atav-api-browser.atdevs.org/*"
+    "tabs",
+    "activeTab",
+    "<all_urls>"
   ],
   "background": {
     "scripts": ["background.js"],
-    "type": "module"
+    "persistent": true
   },
-  "action": {
-    "default_popup": "popup.html",
-    "default_title": "ATAV Safe Browsing"
+  "browser_action": {
+    "default_icon": "dat/good.png",
+    "default_title": "ATAV Safe Browsing",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "48": "dat/good.png"
   },
   "web_accessible_resources": [
-    {
-      "resources": ["blocked.html", "blocked.css", "blocked.js"],
-      "matches": ["<all_urls>"]
-    }
-  ],
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{8e012697-84ab-4fd2-9380-0aadcbcfaec1}",
-      "strict_min_version": "109.0"
-    }
-  },
-  "homepage_url": "https://atdevs.org/",
-  "author": "ATDevs",
-  "source": "https://dl.atdevs.org/src/atav/firefox-add-on/",
-  "license": "Apache-2.0"
+    "blocked.html",
+    "dat/good.png",
+    "dat/warn.png",
+    "warn.png"
+  ]
 }
