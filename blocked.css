@@ -1,120 +1,111 @@
-/* ATAV Safe Browsing - blocked.css */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    background-color: #fef3f3; /* Light red background */
-    color: #58151c; /* Dark red text */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
-    text-align: center;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.container {
-    background-color: #fff;
-    padding: 35px 45px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    max-width: 680px;
-    width: 100%;
-    border-top: 10px solid #d9534f; /* Solid red top border */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #121218;
+  color: #f1f1f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.card {
+  background-color: #1e1e2a;
+  border: 1px solid #2d2d3f;
+  border-radius: 12px;
+  max-width: 560px;
+  width: 100%;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.icon-container {
+  margin-bottom: 20px;
+}
+
+.warning-icon {
+  width: 64px;
+  height: 64px;
 }
 
 h1 {
-    color: #d9534f; /* Red color for danger */
-    font-size: 26px; 
-    margin-bottom: 20px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  font-size: 22px;
+  color: #ef4444;
+  margin-bottom: 12px;
 }
 
-/* Simple CSS-only warning icon */
-.danger-icon::before {
-    content: '!';
-    display: inline-block;
-    font-size: 28px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #d9534f;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    line-height: 36px;
-    text-align: center;
-    margin-right: 12px;
+.description {
+  font-size: 14px;
+  color: #a0a0b5;
+  line-height: 1.6;
+  margin-bottom: 24px;
 }
 
-
-p {
-    font-size: 16px;
-    line-height: 1.7;
-    margin-bottom: 18px;
+.url-box {
+  background-color: #121218;
+  border: 1px dashed #3a3a50;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  word-break: break-all;
+  margin-bottom: 28px;
+  text-align: left;
 }
 
-.details {
-    background-color: #fdf7f7; /* Very light red */
-    border: 1px solid #f5c6cb; /* Light red border */
-    padding: 20px;
-    margin-top: 25px;
-    margin-bottom: 30px;
-    border-radius: 8px;
-    text-align: left;
+.url-box strong {
+  display: block;
+  color: #6b7280;
+  margin-bottom: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
 }
 
-.details p {
-    font-size: 15px;
-    margin-bottom: 12px;
-    color: #721c24; /* Darker red for details text */
-}
-.details p:last-child {
-    margin-bottom: 0;
-}
-
-.details strong {
-    color: #721c24;
-    font-weight: 600;
-    margin-right: 8px;
-}
-
-.details span {
-    word-break: break-all; /* Break long URLs or hostnames */
+#blocked-url-display {
+  color: #f87171;
+  font-family: monospace;
 }
 
 .actions {
-    margin-top: 30px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
 }
 
-button {
-    color: white;
-    border: none;
-    padding: 14px 28px;
-    font-size: 17px;
-    font-weight: 500;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
-    margin: 0 10px;
+.btn {
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-button:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+.btn:active {
+  transform: scale(0.98);
 }
 
-#goBackButton {
-    background-color: #5a6268; /* Dark gray */
-}
-#goBackButton:hover {
-    background-color: #494f54;
+.btn-primary {
+  background-color: #2563eb;
+  color: #ffffff;
 }
 
-.footer-note {
-    margin-top: 35px;
-    font-size: 14px;
-    color: #6c757d; /* Muted gray */
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-danger {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background-color: #b91c1c;
 }

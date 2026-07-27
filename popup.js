@@ -1,148 +1,91 @@
-// ATAV Safe Browsing - popup.js (v1.0.4)
-document.addEventListener('DOMContentLoaded', async () => {
-    const reportForm = document.getElementById('reportForm');
-    const reportHostInput = document.getElementById('reportHost');
-    const reportReasonInput = document.getElementById('reportReason');
-    const reportStatusMessage = document.getElementById('reportStatusMessage');
-    const currentSiteStatusDiv = document.getElementById('currentSiteStatus');
-    const currentSiteHostSpan = document.getElementById('currentSiteHost');
+document.addEventListener("DOMContentLoaded", async () => {
+  const headerIcon = document.getElementById("header-icon");
+  const protectionSelect = document.getElementById("protection-level");
+  const siteUrlElem = document.getElementById("site-url");
+  const statusBadge = document.getElementById("status-badge");
+  const statusDesc = document.getElementById("status-desc");
+  const reportContainer = document.getElementById("unknown-report-container");
+  const reportSafeBtn = document.getElementById("report-safe-btn");
+  const reportMaliciousBtn = document.getElementById("report-malicious-btn");
+  const feedbackMsg = document.getElementById("feedback-msg");
 
-    let currentTabActiveHost = null; 
+  let currentTabUrl = "";
 
-    function updateDisplayStatus(data, hostForDisplay) {
-        if (!data) {
-            currentSiteStatusDiv.textContent = "Status: Could not retrieve status from background.";
-            currentSiteStatusDiv.className = 'status-error'; // Changed to error for clarity
-            return;
-        }
-        if (data.error) {
-            currentSiteStatusDiv.textContent = `Error: ${data.error}`;
-            currentSiteStatusDiv.className = 'status-error';
-        } else if (data.status === "Dangerous") {
-            currentSiteStatusDiv.textContent = `DANGEROUS! Risk: ${data.risk || 'Not specified'}`;
-            currentSiteStatusDiv.className = 'status-dangerous';
-        } else if (data.status === "Safe") {
-            currentSiteStatusDiv.textContent = "SAFE";
-            currentSiteStatusDiv.className = 'status-safe';
+  // Always attach event listener so user can toggle out of "Off" mode
+  protectionSelect.addEventListener("change", async (e) => {
+    const selectedLevel = e.target.value;
+    await browser.runtime.sendMessage({ action: "setProtectionLevel", level: selectedLevel });
+    window.location.reload();
+  });
+
+  // Attach report button click handlers
+  if (reportSafeBtn) {
+    reportSafeBtn.addEventListener("click", () => handleReport("safe"));
+  }
+
+  if (reportMaliciousBtn) {
+    reportMaliciousBtn.addEventListener("click", () => handleReport("dangerous"));
+  }
+
+  try {
+    const response = await browser.runtime.sendMessage({ action: "getTabStatus" });
+    if (response) {
+      if (response.protectionLevel) {
+        protectionSelect.value = response.protectionLevel;
+      }
+
+      const tabInfo = response.tabInfo || {};
+      currentTabUrl = tabInfo.url || "";
+      siteUrlElem.textContent = tabInfo.hostname || currentTabUrl || "No active site";
+
+      if (response.protectionLevel === "Off") {
+        headerIcon.src = "dat/warn.png";
+        statusBadge.className = "status-badge status-off";
+        statusBadge.textContent = "Protection Off";
+        statusDesc.textContent = "Protection is turned off. Site security checks are disabled.";
+        reportContainer.style.display = "none";
+      } else {
+        const status = tabInfo.status || "Safe";
+
+        if (status === "Unknown") {
+          headerIcon.src = "dat/warn.png";
+          statusBadge.className = "status-badge status-unknown";
+          statusBadge.textContent = "Unknown Site";
+          statusDesc.textContent = "We don't know this site. It isn't in our database and we have no idea if it's good or bad.";
+          reportContainer.style.display = "block";
+        } else if (status === "Dangerous" || status === "Malicious") {
+          headerIcon.src = "dat/warn.png";
+          statusBadge.className = "status-badge status-malicious";
+          statusBadge.textContent = "Dangerous";
+          statusDesc.textContent = "Warning: This site is flagged as dangerous or malicious!";
+          reportContainer.style.display = "none";
         } else {
-            currentSiteStatusDiv.textContent = `Status: ${data.status || 'Unknown or no data'}`;
-            currentSiteStatusDiv.className = 'status-unknown';
+          headerIcon.src = "dat/good.png";
+          statusBadge.className = "status-badge status-safe";
+          statusBadge.textContent = "Safe";
+          statusDesc.textContent = "This site is verified as safe by ATAV Safe Browsing.";
+          reportContainer.style.display = "none";
         }
+      }
     }
-    
-    async function loadCurrentTabStatus() {
-        currentSiteHostSpan.textContent = "Loading...";
-        currentSiteStatusDiv.textContent = "Checking status...";
-        currentSiteStatusDiv.className = ''; 
+  } catch (e) {
+    console.error("Error retrieving tab status:", e);
+  }
 
-        try {
-            const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-            if (tabs && tabs.length > 0 && tabs[0].url) {
-                const currentTab = tabs[0];
-                let url;
-                try {
-                    url = new URL(currentTab.url);
-                } catch (e) {
-                    currentTabActiveHost = null;
-                    currentSiteHostSpan.textContent = "N/A (Invalid URL)";
-                    reportHostInput.value = ''; 
-                    currentSiteStatusDiv.textContent = "Cannot determine host from current URL.";
-                    currentSiteStatusDiv.className = 'status-error';
-                    console.warn("ATAV Popup: Error parsing current tab URL:", currentTab.url, e);
-                    return;
-                }
+  async function handleReport(reportType) {
+    if (!currentTabUrl) return;
 
-                if (url.protocol === "http:" || url.protocol === "https:") {
-                    currentTabActiveHost = url.hostname;
-                    currentSiteHostSpan.textContent = currentTabActiveHost;
-                    reportHostInput.value = currentTabActiveHost; 
-
-                    if (browser.runtime && browser.runtime.sendMessage) {
-                        console.log(`ATAV Popup: Sending checkHost message for ${currentTabActiveHost}`);
-                        browser.runtime.sendMessage({
-                            action: "checkHost",
-                            host: currentTabActiveHost
-                        }).then(response => {
-                            console.log("ATAV Popup: Received response from background for checkHost:", response);
-                            updateDisplayStatus(response, currentTabActiveHost);
-                        }).catch(error => {
-                            console.error("ATAV Popup: Error sending/receiving message for checkHost:", error);
-                            // This is where the "Communication error" message originates
-                            updateDisplayStatus({ error: `Communication error with background: ${error.message || 'Unknown error'}` }, currentTabActiveHost);
-                        });
-                    } else {
-                         console.error("ATAV Popup: browser.runtime.sendMessage is not available.");
-                        updateDisplayStatus({ error: "Cannot query background (runtime unavailable)." }, currentTabActiveHost);
-                    }
-                } else {
-                    currentTabActiveHost = null; 
-                    currentSiteHostSpan.textContent = "N/A (Special Page)";
-                    reportHostInput.value = ''; 
-                    currentSiteStatusDiv.textContent = "Status not applicable for this page type.";
-                    currentSiteStatusDiv.className = 'status-unknown';
-                }
-            } else {
-                currentTabActiveHost = null;
-                currentSiteHostSpan.textContent = "N/A";
-                reportHostInput.value = '';
-                currentSiteStatusDiv.textContent = "No active HTTP/HTTPS tab found.";
-                currentSiteStatusDiv.className = 'status-unknown';
-            }
-        } catch (e) {
-            currentTabActiveHost = null;
-            console.error("ATAV Popup: Error getting current tab:", e);
-            currentSiteHostSpan.textContent = "Error";
-            reportHostInput.value = '';
-            updateDisplayStatus({ error: "Could not get tab info." }, null);
-        }
-    }
-
-    loadCurrentTabStatus();
-
-    reportForm.addEventListener('submit', (event) => { // Can be non-async if sendMessage is handled with .then/.catch
-        event.preventDefault();
-        const hostToReport = reportHostInput.value.trim();
-        const reason = reportReasonInput.value.trim();
-
-        reportStatusMessage.textContent = ""; 
-        reportStatusMessage.className = "";
-
-        if (!hostToReport) {
-            reportStatusMessage.textContent = "Hostname is required.";
-            reportStatusMessage.className = 'status-error';
-            return;
-        }
-        if (!/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$|^localhost$/.test(hostToReport)) {
-            reportStatusMessage.textContent = "Invalid hostname format.";
-            reportStatusMessage.className = 'status-error';
-            return;
-        }
-
-        reportStatusMessage.textContent = "Submitting report...";
-        reportStatusMessage.className = 'status-unknown'; 
-
-        console.log(`ATAV Popup: Sending reportSite message for ${hostToReport}`);
-        browser.runtime.sendMessage({
-            action: "reportSite",
-            host: hostToReport,
-            reason: reason
-        }).then(response => {
-            console.log("ATAV Popup: Received response from background for reportSite:", response);
-            if (response && response.status === "Success") {
-                reportStatusMessage.textContent = `Report for '${response.host || hostToReport}' submitted!`;
-                reportStatusMessage.className = 'status-safe';
-                reportReasonInput.value = ''; 
-                if (hostToReport === currentTabActiveHost) {
-                    loadCurrentTabStatus(); 
-                }
-            } else {
-                reportStatusMessage.textContent = `Error: ${response ? (response.error || 'Submission failed') : 'Unknown API response'}`;
-                reportStatusMessage.className = 'status-error';
-            }
-        }).catch(error => {
-            console.error("ATAV Popup: Error sending/receiving message for reportSite:", error);
-            reportStatusMessage.textContent = `Failed to submit report: ${error.message || 'Unknown communication error'}`;
-            reportStatusMessage.className = 'status-error';
-        });
+    const res = await browser.runtime.sendMessage({
+      action: "reportSite",
+      url: currentTabUrl,
+      reportType: reportType
     });
+
+    if (res && res.success) {
+      feedbackMsg.textContent = res.message || "Thank you! Report received.";
+      feedbackMsg.style.display = "block";
+      reportSafeBtn.disabled = true;
+      reportMaliciousBtn.disabled = true;
+    }
+  }
 });
